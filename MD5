@@ -1,6 +1,6 @@
-69d8d7ef94ffee75fbc668d879e3a616 *DESCRIPTION
+65ded28f6a23de9fdbbfb87edd83f639 *DESCRIPTION
 72396fc703921b18ff4d7c4bb3576b9a *NAMESPACE
-9ce47ac6cd2a08fa0d07fc86d7e212a9 *NEWS.md
+6e347e9ff34d1f37639f8613e1846384 *NEWS.md
 49dfade6a8ed33f4f4a783d5def8c497 *R/allocate_wave.R
 01b5f34392bce0a654a9d94f883c1692 *R/apply_multiwave.R
 898a198067221604b833cb709bf47c0e *R/get_data.R
@@ -25,7 +25,7 @@ fe6c820878bfb2c891f532f20661ff55 *data/MatWgt_Sim.rda
 57c41fa7860fd37efae031317fe3746d *inst/doc/Multiwave-Object.html
 add40d1bd3bca3e4da4a75128e1a45ce *inst/doc/optimall-vignette.R
 b6ceb08179d2135cbba26c7fea986541 *inst/doc/optimall-vignette.Rmd
-b6fe9dc6b984e56eb305bb80cb46e1b8 *inst/doc/optimall-vignette.html
+293fe91b56735fdd0dcee6afe7cc6327 *inst/doc/optimall-vignette.html
 e46172c56dfc7f6330f607c65c026325 *inst/doc/using-optimall_shiny.R
 6a0598c07b1665140cb853c80af03ee5 *inst/doc/using-optimall_shiny.Rmd
 5cfa6faef7db10ffff2dc5dc34843102 *inst/doc/using-optimall_shiny.html
@@ -64,7 +64,7 @@ fcf01fd64d7dca114139cea904f6c291 *tests/testthat/test-merge_samples.R
 c0bfbb719c321980b23e2197277a3548 *tests/testthat/test-merge_strata.R
 aa1d793baeeaa17df47ffd1f9c744f0b *tests/testthat/test-multiwave_diagram.R
 a1660edfa6d64de5e61cbe73de9ade6f *tests/testthat/test-new_multiwave.R
-6f103fb4b03e886469811408d8d8c72c *tests/testthat/test-optimall_shiny.R
+5ec733404f83f4e35b4f5304c48470f7 *tests/testthat/test-optimall_shiny.R
 c8c4830e765d65ce01a5fb8e6d7d64c6 *tests/testthat/test-optimum_allocation.R
 f65fb7615b0964fe09c34cfcc3a351eb *tests/testthat/test-sample_strata.R
 5668536bb315f912e9551501abb604f4 *tests/testthat/test-split_strata.R
