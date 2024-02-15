@@ -1,6 +1,6 @@
-f1951e03c725559ce8cb58bac737cdf1 *DESCRIPTION
+07fcfc093638bac57204f44f00b0e346 *DESCRIPTION
 72396fc703921b18ff4d7c4bb3576b9a *NAMESPACE
-435bf3a9d70c29ac45589cdfe334550c *NEWS.md
+64c4190eb00e1e9b05b1543e788d31dc *NEWS.md
 4d4778efe53c9f32913ad1fd5ba7731f *R/allocate_wave.R
 587b90481465016bebc97a0f231fe716 *R/apply_multiwave.R
 898a198067221604b833cb709bf47c0e *R/get_data.R
@@ -21,11 +21,11 @@ d000dbf582a9356426f333c6f2de7d28 *README.md
 17c97c95fe1b1b0785fad50d2816a3c9 *build/vignette.rds
 fe6c820878bfb2c891f532f20661ff55 *data/MatWgt_Sim.rda
 47ea71070097945ab6c934a1794567a9 *inst/doc/Multiwave-Object.R
-0adaf6f8195804526186b8252c8b049f *inst/doc/Multiwave-Object.Rmd
-e4421c55c98d199e76340b1c44236989 *inst/doc/Multiwave-Object.html
+ba5a42425a3582ff99e35647bed81be1 *inst/doc/Multiwave-Object.Rmd
+9e14f68ca6df92e399b69b378eccc98b *inst/doc/Multiwave-Object.html
 add40d1bd3bca3e4da4a75128e1a45ce *inst/doc/optimall-vignette.R
 b6ceb08179d2135cbba26c7fea986541 *inst/doc/optimall-vignette.Rmd
-089b0d3bae8aefa9b66964650820b489 *inst/doc/optimall-vignette.html
+d744d353794a36992e25c9c2e4642922 *inst/doc/optimall-vignette.html
 e46172c56dfc7f6330f607c65c026325 *inst/doc/using-optimall_shiny.R
 6a0598c07b1665140cb853c80af03ee5 *inst/doc/using-optimall_shiny.Rmd
 c9f73fc2216d0c4b6a64aa903137d4ca *inst/doc/using-optimall_shiny.html
@@ -64,11 +64,11 @@ fcf01fd64d7dca114139cea904f6c291 *tests/testthat/test-merge_samples.R
 c0bfbb719c321980b23e2197277a3548 *tests/testthat/test-merge_strata.R
 aa1d793baeeaa17df47ffd1f9c744f0b *tests/testthat/test-multiwave_diagram.R
 a1660edfa6d64de5e61cbe73de9ade6f *tests/testthat/test-new_multiwave.R
-8ecfea949ce5a92a676946ba25d51dd1 *tests/testthat/test-optimall_shiny.R
+8be49e04425a1694f35e820502881497 *tests/testthat/test-optimall_shiny.R
 c8c4830e765d65ce01a5fb8e6d7d64c6 *tests/testthat/test-optimum_allocation.R
 f65fb7615b0964fe09c34cfcc3a351eb *tests/testthat/test-sample_strata.R
 5668536bb315f912e9551501abb604f4 *tests/testthat/test-split_strata.R
 a055606a2a07ab087c967b22a4b9c38d *tests/testthat/test-summary.R
-0adaf6f8195804526186b8252c8b049f *vignettes/Multiwave-Object.Rmd
+ba5a42425a3582ff99e35647bed81be1 *vignettes/Multiwave-Object.Rmd
 b6ceb08179d2135cbba26c7fea986541 *vignettes/optimall-vignette.Rmd
 6a0598c07b1665140cb853c80af03ee5 *vignettes/using-optimall_shiny.Rmd

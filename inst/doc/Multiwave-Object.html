@@ -626,7 +626,7 @@ sampling wave:</p>
 to specify the <code>strata</code> argument again because it was
 available in the phase metadata. The result of this call to
 <code>apply_multiwave()</code> is an updated <code>IrisSurvey</code>
-with a character vector of ids to sample in the ”samples” slot:</p>
+with a character vector of ids to sample in the “samples” slot:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">get_data</span>(IrisSurvey, <span class="at">phase =</span> <span class="dv">2</span>, <span class="at">wave =</span> <span class="dv">1</span>, <span class="at">slot =</span> <span class="st">&quot;samples&quot;</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co">#&gt;  [1] &quot;11&quot;  &quot;21&quot;  &quot;25&quot;  &quot;26&quot;  &quot;27&quot;  &quot;28&quot;  &quot;33&quot;  &quot;54&quot;  &quot;57&quot;  &quot;67&quot;  &quot;68&quot;  &quot;69&quot; </span></span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co">#&gt; [13] &quot;75&quot;  &quot;80&quot;  &quot;85&quot;  &quot;89&quot;  &quot;98&quot;  &quot;103&quot; &quot;106&quot; &quot;113&quot; &quot;115&quot; &quot;129&quot; &quot;131&quot; &quot;132&quot;</span></span>
