@@ -11,7 +11,10 @@ sample_strata(
   already_sampled = NULL,
   design_data,
   design_strata = "strata",
-  n_allocated = "n_to_sample"
+  n_allocated = "n_to_sample",
+  probs = NULL,
+  wave = NULL,
+  warn_prob_overwrite = TRUE
 )
 }
 \arguments{
@@ -43,11 +46,35 @@ Defaults to "strata".}
 \item{n_allocated}{a character string specifying the name of the
 column in \code{design_data} that indicates the n allocated to each
 stratum. Defaults to "n_to_sample".}
+
+\item{probs}{a character string specifying the name of the column in
+in \code{design_data} that indicates the sampling probability for each
+stratum, or a formula indicating how the sampling probabilities can be
+computed. From existing columns.
+If specified, a new column containing the sampling probability
+attached to each sampled unit will be created in the outputted
+dataframe. This column will be named "sampling_prob". Defaults to NULL.}
+
+\item{wave}{A numeric value or character string indicating the
+sampling wave. If specified, the input is appended to
+"sample_indicator" in the new the sample indicator column name
+(as long as such columns name do not already exist in \code{data}).
+Defaults to NULL. This argument does not
+apply when \code{sample_strata()} is called inside \code{allocate_wave()}.}
+
+\item{warn_prob_overwrite}{Logical indicator for whether warning should
+be printed if \code{probs} is specified and a "sampling_prob" columns is
+going to be overwritten. Defaults to TRUE. If function is called inside
+\code{apply_multiwave()}, then defaults to FALSE}
 }
 \value{
 returns \code{data} as a dataframe with a new column named
 "sample_indicator" containing a binary (1/0) indicator of
-whether each unit should be sampled.
+whether each unit should be sampled. If \code{wave} argument is
+specified, then the given input is appended to the name "sample_indicator".
+If \code{probs} argument is specified, then the dataframe will also contain
+a new column named "sampling_prob" holding the sampling probabilities for
+each sampled element.
 }
 \description{
 Requires two dataframes or matrices: \code{data} with a column
@@ -66,6 +93,7 @@ or \code{optimum_allocation()}.
 # Define a design dataframe
 design <- data.frame(
   strata = c("setosa", "virginica", "versicolor"),
+  npop = c(50, 50, 50),
   n_to_sample = c(5, 5, 5)
 )
 
@@ -75,7 +103,15 @@ iris$id <- 1:nrow(iris)
 # Run
 sample_strata(
   data = iris, strata = "Species", id = "id",
-  design_data = design, design_strata = "strata", n_allocated = "n_to_sample"
+  design_data = design, design_strata = "strata",
+  n_allocated = "n_to_sample"
+)
+
+# To include probs as a formula
+sample_strata(
+  data = iris, strata = "Species", id = "id",
+  design_data = design, design_strata = "strata",
+  n_allocated = "n_to_sample", probs = ~n_to_sample/npop
 )
 
 # If some units had already been sampled
@@ -84,6 +120,7 @@ iris$already_sampled <- rbinom(nrow(iris), 1, 0.25)
 sample_strata(
   data = iris, strata = "Species", id = "id",
   already_sampled = "already_sampled",
-  design_data = design, design_strata = "strata", n_allocated = "n_to_sample"
+  design_data = design, design_strata = "strata",
+  n_allocated = "n_to_sample"
 )
 }

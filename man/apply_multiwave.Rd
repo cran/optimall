@@ -36,7 +36,9 @@ The default argument when \code{allocate_wave} is applied in a \code{apply_multi
 \item \code{sample_strata}: Uses the \code{data} from the previous wave
 (or previous phase if \code{wave = 1}) and \code{design}
 from current wave to generate a vector of ids to sample for the current
-wave. If used, the output multiwave object contains an updated
+wave. Note that the \code{wave} argument of the standalone
+\code{sample_strata()} function does not apply here,
+If used, the output multiwave object contains an updated
 \code{"samples"} slot in the specified wave.
 \item \code{merge_samples}: Uses the \code{data} from the previous wave (or
 previous phase if \code{wave = 1}) and \code{sampled_data} from the
@@ -77,8 +79,8 @@ function in its specified slot.
 
 library(datasets)
 
-MySurvey <- new_multiwave(phases = 2, waves = c(1, 3))
-get_data(MySurvey, phase = 1, slot = "data") <-
+MySurvey <- multiwave(phases = 2, waves = c(1, 3))
+set_mw(MySurvey, phase = 1, slot = "data") <-
   dplyr::select(datasets::iris, -Sepal.Width)
 
 # Get Design by applying optimum_allocation
@@ -91,7 +93,7 @@ MySurvey <- apply_multiwave(MySurvey,
 )
 
 # or, we can establish function args in the metadata
-get_data(MySurvey, phase = 2, slot = "metadata") <- list(
+set_mw(MySurvey, phase = 2, slot = "metadata") <- list(
   strata = "Species",
   nsample = 15,
   y = "Sepal.Length",

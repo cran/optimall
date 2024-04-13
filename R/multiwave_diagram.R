@@ -13,7 +13,7 @@
 #' @return Returns an object of class \code{htmlwidget}
 #' displaying the structure of the \code{x}.
 #' @examples
-#' MySurvey <- new_multiwave(phases = 2, waves = c(1, 3))
+#' MySurvey <- multiwave(phases = 2, waves = c(1, 3))
 #' multiwave_diagram(MySurvey)
 #' @export
 multiwave_diagram <- function(x, height = NULL, width = NULL) {
@@ -210,16 +210,16 @@ multiwave_diagram <- function(x, height = NULL, width = NULL) {
             )
           )
         samples_color <-
-          ifelse(length(x@phases[[i]]@waves[[j]]@samples) == 0,
+          ifelse(length(x@phases[[i]]@waves[[j]]@samples$ids) == 0,
             empty_slot_color,
             full_slot_color
           )
         samples_text <-
-          ifelse(length(x@phases[[i]]@waves[[j]]@samples) == 0,
+          ifelse(length(x@phases[[i]]@waves[[j]]@samples$ids) == 0,
             ">",
             paste(
-              "<br/> vector of length ",
-              as.character(length(x@phases[[i]]@waves[[j]]@samples)),
+              "<br/> vector of length",
+              as.character(length(x@phases[[i]]@waves[[j]]@samples$ids)),
               ">"
             )
           )

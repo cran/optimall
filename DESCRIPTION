@@ -1,7 +1,7 @@
 Type: Package
 Package: optimall
 Title: Allocate Samples Among Strata
-Version: 0.1.5
+Version: 1.1.0
 Authors@R: c(
 	person(given = "Jasper",
                family = "Yang",
@@ -35,18 +35,18 @@ Suggests: bslib (>= 0.2.4), DiagrammeR (>= 1.0.0), DT (>= 0.15),
 VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Collate: 'allocate_wave.R' 'sample_strata.R' 'wave.R' 'phase.R'
         'multiwave.R' 'merge_samples.R' 'optimum_allocation.R'
-        'get_data.R' 'apply_multiwave.R' 'matwgt_sim.R'
-        'merge_strata.R' 'multiwave_diagram.R' 'new_multiwave.R'
-        'optimall_shiny.R' 'split_strata.R' 'summary.multiwave.R'
+        'set_mw.R' 'get_mw.R' 'apply_multiwave.R' 'matwgt_sim.R'
+        'merge_strata.R' 'multiwave_diagram.R' 'optimall_shiny.R'
+        'split_strata.R' 'summary.multiwave.R'
 NeedsCompilation: no
-Packaged: 2024-02-15 16:42:04 UTC; jasper
+Packaged: 2024-04-12 18:28:50 UTC; jasper
 Author: Jasper Yang [aut, cre],
   Pamela Shaw [aut],
   Bryan Shepherd [ctb],
   Thomas Lumley [ctb],
   Gustavo Amorim [rev]
 Repository: CRAN
-Date/Publication: 2024-02-15 18:50:02 UTC
+Date/Publication: 2024-04-13 07:50:02 UTC
