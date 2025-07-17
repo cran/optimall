@@ -38,10 +38,11 @@ test_that("the output of allocate_wave is as expected", {
 test_that("the output is as expected with allocation_method = Neyman", {
   output <- allocate_wave(
     data = data, strata = "strata",
-    already_sampled = "key", y = "y", nsample = 15, allocation_method = "Neyman"
+    already_sampled = "key", y = "y", nsample = 15, allocation_method = "Neyman",
+    detailed = TRUE
   )
   expect_equal(
-    output$nsample_actual,
+    output$nsample_optimal,
     optimum_allocation(
       data = data, strata = "strata",
       y = "y", method = "Neyman",
@@ -210,5 +211,88 @@ test_that("basic errors work", {
       already_sampled = "key", y = "y", nsample = 20
     ),
     "cannot contain NAs"
+  )
+})
+
+#####
+##### Tests for multiple y columns
+data <- data.frame(
+  "strata" = c(
+    rep("a", times = 15),
+    rep("b", times = 15),
+    rep("c", times = 12)
+  ),
+  "y1" = c(rnorm(30, sd = 1), rnorm(12, sd = 1.5)),
+  "y2" = c(rnorm(30, sd = 1.5), rnorm(12, sd = 2.3)),
+  "key" = rbinom(42, 1, 0.2)
+)
+data$key[c(1, 16, 31)] <- 1 # To make sure no group gets zero in already_sampled
+
+
+test_that("the output of allocate_wave is as expected", {
+  expect_error(allocate_wave(
+    data = data, strata = "strata",
+    already_sampled = "key", y = c("y1","y2"), nsample = 15
+  ),"Must provide a vector of 'weights")
+
+  expect_error(allocate_wave(
+    data = data, strata = "strata",
+    already_sampled = "key", y = c("y1","y2"),
+    weights = c(1,2), nsample = 15
+  ),"Must provide a vector of 'weights")
+
+  output <- allocate_wave(
+    data = data, strata = "strata",
+    already_sampled = "key", y = c("y1","y2"),
+    weights = c(0.5,0.5),
+    nsample = 15, detailed = TRUE
+  )
+  expect_equal(
+    output$nsample_actual,
+    optimum_allocation(
+      data = data, strata = "strata",
+      y = c("y1","y2"), weights = c(0.5,0.5),
+      nsample = sum(data$key) + 15
+    )$stratum_size
+  )
+  # Only works if no oversampling in already_sampled
+  expect_equal(sum(output$n_to_sample), 15)
+  expect_equal(
+    sum(output$n_to_sample) + sum(output$nsample_prior),
+    sum(output$nsample_actual)
+  )
+})
+
+#####
+##### Tests for multiple y columns with oversampling
+set.seed(1)
+data <- data.frame(
+  "strata" = c(
+    rep("a", times = 15),
+    rep("b", times = 15),
+    rep("c", times = 12)
+  ),
+  "y1" = c(rnorm(30, sd = 1), rnorm(12, sd = 1.5)),
+  "y2" = c(rnorm(30, sd = 1.5), rnorm(12, sd = 2.3)),
+  "key" = rbinom(42, 1, 0.2)
+)
+data$key[c(1, 2, 3,4,5,6,7, 8, 9,
+           16, 31)] <- 1 # To make sure no group gets zero in already_sampled
+
+
+test_that("the output of allocate_wave is as expected", {
+  output <- allocate_wave(
+    data = data, strata = "strata",
+    already_sampled = "key", y = c("y1","y2"),
+    weights = c(0.5,0.5),
+    nsample = 5, detailed = TRUE
+  )
+  expect_equal(
+    output$nsample_optimal,
+    optimum_allocation(
+      data = data, strata = "strata",
+      y = c("y1","y2"), weights = c(0.5,0.5),
+      nsample = sum(data$key) + 5
+    )$stratum_size
   )
 })

@@ -59,6 +59,10 @@
 #' \code{apply_multiwave()}.
 #' These details are all available from
 #' \code{optimum_allocation()}.
+#' @param weights A numeric vector of length matching the length of \code{y}
+#' that is only applicable if these lengths are > 1. In this case,
+#' the values must sum to 1 and correspond to the weights of each variables
+#' of interest in A-optimal allocation.
 #' @examples
 #' # Create dataframe with a column specifying strata, a variable of interest
 #' # and an indicator for whether each unit was already sampled
@@ -107,6 +111,7 @@ allocate_wave <- function(data,
                           allocation_method = c("WrightII", "WrightI",
                                                 "Neyman"),
                           method = c("iterative","simple"),
+                          weights = NULL,
                           detailed = FALSE) {
   key <- stratum_size <- wave1_size <- npop <- difference <-
     nsample_prior <- n_to_sample <- nsample_actual <-
@@ -121,8 +126,8 @@ allocate_wave <- function(data,
     stop("'strata' must be a character string or vector of
     strings matching column names of data.")
   }
-  if (y %in% names(data) == FALSE) {
-    stop("'y' must be a character string matching a column name of data.")
+  if (all(y %in% names(data)) == FALSE) {
+    stop("'y' must be a character string or vector matching column names of data.")
   }
   if (already_sampled %in% names(data) == FALSE) {
     stop("'already_sampled' must be a character string matching a column name of
@@ -138,16 +143,21 @@ allocate_wave <- function(data,
          use 'optimum_allocation'.")
   }
   if (("Y" %in% data[, already_sampled] == FALSE & 1 %in%
-    data[, already_sampled] == FALSE) | anyNA(data[, already_sampled])) {
+       data[, already_sampled] == FALSE) | anyNA(data[, already_sampled])) {
     stop("'already_sampled' column must contain '1' (numeric) or 'Y'
          (character) as indicators that a unit was sampled in a
          previous wave and cannot contain NAs. If no units have
          been sample, use 'optimum_allocation.")
   }
   if (nsample + sum(data[, already_sampled] == "Y") +
-    sum(data[, already_sampled] == 1) > length(data[, y])) {
+      sum(data[, already_sampled] == 1) > nrow(data[, y, drop = FALSE])) {
     stop("Total sample size across waves, taken as nsampled in
          already_sampled + nsample, is larger than the population size.")
+  }
+  # Check for weights
+  if(length(y) > 1 & (is.null(weights) | sum(weights) != 1)){
+    stop("Must provide a vector of 'weights' which sum to 1
+    if 'y' or 'sd_h' is a vector of length > 1.")
   }
   allocation_method <- match.arg(allocation_method)
   method <- match.arg(method)
@@ -159,12 +169,14 @@ allocate_wave <- function(data,
     y = y,
     nsample = nsample + nsampled,
     method = allocation_method,
+    weights = weights,
     allow.na = TRUE
   )
   # Optimal for total sample size
 
   # Create groups from strata argument and determine the prior
   # sample size for each
+  raw_y <- y
   y <- enquo(y)
   strata <- enquo(strata)
   key_q <- enquo(already_sampled)
@@ -174,7 +186,7 @@ allocate_wave <- function(data,
   wave1_df <- cbind(group, wave1_df)
   wave1_df <- dplyr::select(wave1_df, 1, !!y, !!key_q)
   # Only columns of interest
-  names(wave1_df) <- c("group", "y", "key")
+  names(wave1_df) <- c("group", raw_y, "key")
   wave1_summary <- wave1_df %>%
     dplyr::group_by(group) %>%
     dplyr::summarize(wave1_size = sum(key == 1 | key == "Y"))
@@ -182,8 +194,8 @@ allocate_wave <- function(data,
   names(output1)[1] <- "group"
   comp_df <- dplyr::inner_join(output1, wave1_summary, by = "group")
   comp_df <- dplyr::mutate(comp_df,
-    difference = stratum_size - wave1_size,
-    n_avail = npop - wave1_size
+                           difference = stratum_size - wave1_size,
+                           n_avail = npop - wave1_size
   )
 
   # For the simple case in which no strata have been oversampled
@@ -202,12 +214,22 @@ allocate_wave <- function(data,
           nsample_prior, n_to_sample
         )
     } else if (detailed == TRUE) {
-      comp_df <- comp_df %>%
-        dplyr::select(
-          "strata" = group, npop, nsample_optimal,
-          nsample_actual, nsample_prior,
-          n_to_sample, sd
-        )
+      if(length(raw_y) == 1){
+        comp_df <- comp_df %>%
+          dplyr::select(
+            "strata" = group, npop, nsample_optimal,
+            nsample_actual, nsample_prior,
+            n_to_sample, sd
+          )
+      } else{
+        comp_df <- comp_df %>%
+          dplyr::select(
+            "strata" = group, npop, nsample_optimal,
+            nsample_actual, nsample_prior,
+            n_to_sample
+          )
+        comp_df <- cbind(comp_df, output1[3:(2+length(y))])
+      }
     }
     return(comp_df)
   }
@@ -225,9 +247,10 @@ allocate_wave <- function(data,
     open_output <- optimall::optimum_allocation(
       data = open_df,
       strata = "group",
-      y = "y",
+      y = raw_y,
       nsample = nsample + nsampled - nsampled_in_closed_groups,
       method = allocation_method,
+      weights = weights,
       allow.na = TRUE
     )
     names(open_output)[1] <- "group"
@@ -274,19 +297,36 @@ allocate_wave <- function(data,
 
     output_df <- rbind(closed_output, open_output)
     if (detailed == TRUE) {
-      output_df <- dplyr::inner_join(
-        output_df,
-        dplyr::select(output1,
-          "nsample_optimal" = stratum_size,
-          sd,
-          "strata" = group
-        ),
-        by = "strata"
-      )
-      output_df <- dplyr::select(
-        output_df, strata, npop, nsample_optimal,
-        nsample_actual, nsample_prior, n_to_sample, sd
-      )
+      if(length(raw_y) == 1){
+        output_df <- dplyr::inner_join(
+          output_df,
+          dplyr::select(output1,
+                        "nsample_optimal" = stratum_size,
+                        sd,
+                        "strata" = group
+          ),
+          by = "strata"
+        )
+        output_df <- dplyr::select(
+          output_df, strata, npop, nsample_optimal,
+          nsample_actual, nsample_prior, n_to_sample, sd
+        )
+      } else{
+        sd_names <- names(output1)[3:(2 + length(y))]
+        output_df <- dplyr::inner_join(
+          output_df,
+          dplyr::select(output1,
+                        "nsample_optimal" = stratum_size,
+                        dplyr::all_of(sd_names),
+                        "strata" = group
+          ),
+          by = "strata"
+        )
+        output_df <- dplyr::select(
+          output_df, strata, npop, nsample_optimal,
+          nsample_actual, nsample_prior, n_to_sample, dplyr::all_of(sd_names)
+        )
+      }
     }
     output_df <- dplyr::arrange(output_df, strata)
     if (any(output_df$n_to_sample < 0)) {
@@ -330,9 +370,9 @@ allocate_wave <- function(data,
 
       # Run optimal allocation on this filtered df of open groups
       outputn <- optimall::optimum_allocation(
-        data = open_df, strata = "group", y = "y",
+        data = open_df, strata = "group", y = raw_y,
         nsample = nsample + nsampled - nsampled_in_closed_groups,
-        method = allocation_method,
+        method = allocation_method, weights = weights,
         allow.na = TRUE
       )
 
@@ -340,8 +380,8 @@ allocate_wave <- function(data,
       names(outputn)[1] <- "group"
       comp_df <- dplyr::inner_join(outputn, wave1_summary, by = "group")
       comp_df <- dplyr::mutate(comp_df,
-        difference = stratum_size - wave1_size,
-        n_avail = npop - wave1_size
+                               difference = stratum_size - wave1_size,
+                               n_avail = npop - wave1_size
       )
     }
     open_output <- comp_df %>%
@@ -373,19 +413,36 @@ allocate_wave <- function(data,
       )
     output_df <- rbind(closed_output, open_output)
     if (detailed == TRUE) {
-      output_df <- dplyr::inner_join(
-        output_df,
-        dplyr::select(output1,
-          "nsample_optimal" = stratum_size,
-          sd,
-          "strata" = group
-        ),
-        by = "strata"
-      )
-      output_df <- dplyr::select(
-        output_df, strata, npop, nsample_optimal,
-        nsample_actual, nsample_prior, n_to_sample, sd
-      )
+      if(length(raw_y) == 1){
+        output_df <- dplyr::inner_join(
+          output_df,
+          dplyr::select(output1,
+                      "nsample_optimal" = stratum_size,
+                      sd,
+                      "strata" = group
+          ),
+          by = "strata"
+        )
+        output_df <- dplyr::select(
+          output_df, strata, npop, nsample_optimal,
+          nsample_actual, nsample_prior, n_to_sample, sd
+        )
+      } else{
+        sd_names <- names(output1)[3:(2 + length(y))]
+        output_df <- dplyr::inner_join(
+          output_df,
+          dplyr::select(output1,
+                        "nsample_optimal" = stratum_size,
+                        dplyr::all_of(sd_names),
+                        "strata" = group
+          ),
+          by = "strata"
+        )
+        output_df <- dplyr::select(
+          output_df, strata, npop, nsample_optimal,
+          nsample_actual, nsample_prior, n_to_sample, dplyr::all_of(sd_names)
+        )
+      }
     }
     output_df <- dplyr::arrange(output_df, strata)
     return(output_df)

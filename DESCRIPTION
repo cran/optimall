@@ -1,7 +1,7 @@
 Type: Package
 Package: optimall
 Title: Allocate Samples Among Strata
-Version: 1.1.1
+Version: 1.2.0
 Authors@R: c(
 	person(given = "Jasper",
                family = "Yang",
@@ -43,11 +43,11 @@ Collate: 'allocate_wave.R' 'sample_strata.R' 'wave.R' 'phase.R'
         'merge_strata.R' 'multiwave_diagram.R' 'optimall_shiny.R'
         'split_strata.R' 'summary.multiwave.R'
 NeedsCompilation: no
-Packaged: 2024-06-03 06:01:37 UTC; jasper
+Packaged: 2025-07-16 23:46:56 UTC; jasper
 Author: Jasper Yang [aut, cre],
   Pamela Shaw [aut],
   Bryan Shepherd [ctb],
   Thomas Lumley [ctb],
   Gustavo Amorim [rev]
 Repository: CRAN
-Date/Publication: 2024-06-03 07:59:20 UTC
+Date/Publication: 2025-07-17 00:00:02 UTC
